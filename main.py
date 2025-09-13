@@ -9,7 +9,6 @@ import os
 from database import Base, engine, SessionLocal
 from models import User, Note
 
-
 # CREATE TABLES
 Base.metadata.create_all(bind=engine)
 
@@ -20,7 +19,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 
-#DEPEDENCY TO GET DB SESSION
+# DEPEDENCY TO GET DB SESSION
 def get_db():
     db = SessionLocal()
     try:
@@ -32,9 +31,11 @@ def get_db():
 # FAKE SESSION, SIMPLE FOR DEMO (NO JWT)
 session_data = {}
 
+
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
-    return templates.TemplateResponse("login.html", {"request" : request})
+    return templates.TemplateResponse("login.html", {"request": request})
+
 
 @app.get("/register", response_class=HTMLResponse)
 async def register_page(request: Request):
@@ -43,25 +44,60 @@ async def register_page(request: Request):
 
 @app.post("/register")
 async def register_user(
-    username: str = Form(...),
-    email: str = Form(...),
-    password: str = Form(...),
-    db: Session = Depends(get_db)
+        username: str = Form(...),
+        email: str = Form(...),
+        password: str = Form(...),
+        db: Session = Depends(get_db)
 ):
     user = User(username=username, email=email, password=password)
     db.add(user)
     db.commit()
     return RedirectResponse("/", status_code=302)
 
+
 @app.post("/login")
 async def login_user(
-    request: Request,
-    email: str = Form(...),
-    password: str = Form(...),
-    db: Session = Depends(get_db)
+        request: Request,
+        email: str = Form(...),
+        password: str = Form(...),
+        db: Session = Depends(get_db)
 ):
     user = db.query(User).filter(User.email == email, User.password == password).first()
     if user:
         session_data["user"] = user.username
         return RedirectResponse("/dashboard", status_code=302)
-    return templates.TemplateResponse("login.html", {})
+    return templates.TemplateResponse("login.html", {"request": request, "msg": "Invalid login, try again"})
+
+
+@app.get("/dashboard", response_class=HTMLResponse)
+async def dashboard(request: Request):
+    username = session_data.get("user")
+    if not username:
+        return RedirectResponse("/", status_code=302)
+    return templates.TemplateResponse("dashboard.html", {"request": request, "username": username})
+
+
+@app.post("/notes")
+async def upload_note(
+        title: str = Form(...),
+        content: str = Form(...),
+        file: UploadFile = File(...),
+        db: Session = Depends(get_db)
+):
+    username = session_data.get("user")
+    if not username:
+        return RedirectResponse("/", status_code=302)
+
+    user = db.query(User).filter(User.username == username).first()
+    file_location = f"uploads/{file.filename}"
+
+    with open(file_location, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    note = Note(title=title, content=content, filename=file.filename, user_id=user.id)
+    db.add(note)
+    db.commit()
+
+    return RedirectResponse("/dashboard", status_code=302)
+
+
