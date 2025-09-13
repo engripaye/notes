@@ -1,10 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Register</title>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-
+<h2>Register</h2>
+<form action="/register" method="post">
+    <input type="text" name="username" placeholder="Enter username" required><br>
+    <input type="email" name="email" placeholder="Enter email" required><br>
+    <input type="password" name="password" placeholder="Enter password" required><br>
+    <button type="submit">Register</button>
+</form>
+<p>Already registered? <a href="/">Login</a></p>
 </body>
 </html>
