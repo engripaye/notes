@@ -122,3 +122,19 @@ async def get_notes(db: Session = Depends(get_db)):
     ]
 
 
+# MY NOTES
+@app.get("/mynotes", response_class=HTMLResponse)
+async def my_notes(request: Request, db: Session = Depends(get_db)):
+    username = request.session.get("user")
+    if not username:
+        return RedirectResponse("/login", status_code=303)
+
+    user = db.query(User).filter(User.username == username).first()
+    notes = db.query(Note).filter(Note.user_id == user.id).all()
+
+    return templates.TemplateResponse(
+        "mynotes.html",
+        {"request": request, "username": username, "notes": notes}
+    )
+
+

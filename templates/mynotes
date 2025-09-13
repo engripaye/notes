@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Notes</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>{{ username }}'s Notes 📒</h2>
+
+        {% if notes %}
+            <ul class="notes-list">
+                {% for note in notes %}
+                    <li class="note-item">
+                        <h3>{{ note.title }}</h3>
+                        <p>{{ note.content }}</p>
+                        {% if note.file_path %}
+                            <a href="{{ note.file_path }}" target="_blank">📂 View File</a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No notes uploaded yet.</p>
+        {% endif %}
+
+        <p><a href="/dashboard">⬅ Back to Dashboard</a></p>
+    </div>
+</body>
+</html>
