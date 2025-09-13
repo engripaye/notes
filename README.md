@@ -1,5 +1,3 @@
----
-
 # 📒 Notes API with File Uploads
 
 A simple but professional **FastAPI** project where users can:
