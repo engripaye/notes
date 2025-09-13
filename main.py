@@ -121,3 +121,4 @@ async def get_notes(db: Session = Depends(get_db)):
         for note in notes
     ]
 
+
