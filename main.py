@@ -19,7 +19,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 
-# DEPEDENCY TO GET DB SESSION
+# DEPENDENCY TO GET DB SESSION
 def get_db():
     db = SessionLocal()
     try:
@@ -101,3 +101,22 @@ async def upload_note(
     return RedirectResponse("/dashboard", status_code=302)
 
 
+@app.get("/notes")
+async def get_notes(db: Session = Depends(get_db)):
+    username = session_data.get("user")
+    if not username:
+        return RedirectResponse("/", status_code=302)
+
+    user = db.query(User).filter(User.username == username).first()
+    notes = db.query(Note).filter(Note.user_id == user.id).all()
+
+    return [
+        {
+            "id": note.id,
+            "title": note.title,
+            "content": note.content,
+            "filename": note.filename
+        }
+
+        for note in notes
+    ]
