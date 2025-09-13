@@ -1,16 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Dashboard</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-<h2>Hello {{ username }} 👋 Welcome to Notes API</h2>
-<form action="/notes" method="post" enctype="multipart/form-data">
-    <input type="text" name="title" placeholder="Note title" required><br>
-    <textarea name="content" placeholder="Write your note..." required></textarea><br>
-    <input type="file" name="file" required><br>
-    <button type="submit">Upload Note</button>
-</form>
+<div class="container">
+    <h2 class="dashboard-header">Hello {{ username }} 👋 Welcome to Notes API</h2>
+
+    <form action="/notes" method="post" enctype="multipart/form-data">
+        <input type="text" name="title" placeholder="Note title" required>
+        <textarea name="content" placeholder="Write your note..." required></textarea>
+        <input type="file" name="file" required>
+        <button type="submit">Upload Note</button>
+    </form>
+
+    <p style="margin-top:20px;">Want to add another note? Just fill the form above ✅</p>
+</div>
 </body>
 </html>
