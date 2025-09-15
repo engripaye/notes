@@ -3,7 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <title>Login | My Note</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Page Layout */
+        body {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+
+        /* Auth page container (Login/Register) */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            gap: 40px;
+            color: #fff;
+        }
+
+        /* Welcome section */
+        .welcome-section h1 {
+            font-size: 32px;
+            margin-bottom: 15px;
+            color: #fff; /* white text stands out */
+        }
+
+        .welcome-section p {
+            font-size: 16px;
+            color: #eee;
+        }
+
+        .welcome-section .brand {
+            color: #FFD700; /* gold highlight */
+            font-weight: bold;
+        }
+
+        /* Login/Register card */
+        .form-section {
+            background: #fff;
+            color: #2C3E50; /* dark navy */
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            width: 320px;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        .form-section h2 {
+            margin-bottom: 20px;
+            color: #764ba2; /* purple accent */
+            text-align: center;
+        }
+
+        /* Inputs */
+        .form-section input {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+            color: #2C3E50;
+            outline: none;
+            transition: 0.3s ease;
+        }
+
+        .form-section input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
+        }
+
+        /* Buttons */
+        .form-section button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .form-section button:hover {
+            opacity: 0.9;
+        }
+
+        /* Links */
+        .form-section a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .form-section a:hover {
+            text-decoration: underline;
+        }
+
+        /* Error message */
+        .error-msg {
+            background: #ffe0e0;
+            color: #d9534f;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
 <body>
 <div class="auth-container">
