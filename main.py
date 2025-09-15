@@ -172,7 +172,7 @@ async def get_notes(db: Session = Depends(get_db)):
 
 # MY NOTES
 @app.get("/mynotes", response_class=HTMLResponse)
-async def my_notes(request: Request, db: Session = Depends(get_db)):
+async def my_notes(request: Request, updated: str,  db: Session = Depends(get_db)):
     username = session_data.get("user")
     if not username:
         return RedirectResponse("/login", status_code=303)
@@ -180,9 +180,11 @@ async def my_notes(request: Request, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.username == username).first()
     notes = db.query(Note).filter(Note.user_id == user.id).all()
 
+    msg = "✅ Note successfully updated!" if updated else None
+
     return templates.TemplateResponse(
         "mynotes.html",
-        {"request": request, "username": username, "notes": notes}
+        {"request": request, "username": username, "notes": notes, "msg": msg}
     )
 
 
@@ -267,8 +269,8 @@ async def update_note(
     db.commit()
     db.refresh(note)
 
-    # redirect back with message
-    return RedirectResponse("/mynotes", status_code=303)
+    # redirect with ?updated=1
+    return RedirectResponse("/mynotes?updated=1", status_code=303)
 
 
 @app.get("/deletenote/{note_id}")
