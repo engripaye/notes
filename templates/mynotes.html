@@ -113,7 +113,7 @@
             <p>{{ note.content or "✏️ No content added." }}</p>
             {% if note.filename %}
             <a href="/viewfile/{{ note.id }}">📂 View File</a>
-            {% else %}
+            {% endif %}
             <p style="color:#999; font-style:italic;">No file attached</p>
             {% endif %}
         </li>

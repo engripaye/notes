@@ -15,8 +15,11 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+#uploads folder
+os.makedirs("uploads", exist_ok=True)
+
 # STATIC + TEMPLATES
-# app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 templates = Jinja2Templates(directory="templates")
 
 
@@ -127,7 +130,6 @@ async def upload_note(
 
     filename = None
     if file:
-        os.makedirs("uploads", exist_ok=True)
         file_location = f"uploads/{file.filename}"
         with open(file_location, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
@@ -137,7 +139,6 @@ async def upload_note(
     db.add(note)
     db.commit()
 
-    return RedirectResponse("/dashboard?success=1", status_code=302)
 
     # ✅ redirect with a query param
     return RedirectResponse("/dashboard?success=1", status_code=302)
@@ -178,6 +179,7 @@ async def my_notes(request: Request, db: Session = Depends(get_db)):
         "mynotes.html",
         {"request": request, "username": username, "notes": notes}
     )
+
 
 @app.get("/viewfile/{note_id}", response_class=HTMLResponse)
 async def view_file(request: Request, note_id: int, db: Session = Depends(get_db)):

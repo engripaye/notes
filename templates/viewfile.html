@@ -4,61 +4,13 @@
     <meta charset="UTF-8">
     <title>View File</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            background: linear-gradient(135deg, #ece9e6, #ffffff);
-            margin: 0;
-            padding: 0;
-            color: #333;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 40px auto;
-            background: #fff;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-
-        h2 {
-            margin-bottom: 20px;
-            color: #2c3e50;
-        }
-
-        .file-preview {
-            margin: 20px 0;
-        }
-
-        iframe, img {
-            width: 100%;
-            max-height: 600px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-
-        .download-link, .back-link {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 12px 18px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: #fff;
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 6px;
-            transition: opacity 0.2s;
-        }
-
-        .download-link:hover, .back-link:hover {
-            opacity: 0.9;
-        }
-
-        .back-link {
-            background: #16a085;
-            margin-left: 10px;
-        }
+        body { background:#f4f6f9; font-family:sans-serif; display:flex; flex-direction:column; align-items:center; padding:30px; }
+        .container { background:#fff; padding:20px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.1); width:80%; max-width:900px; }
+        h2 { color:#444; text-align:center; margin-bottom:20px; }
+        iframe, img { width:100%; border-radius:8px; border:1px solid #ddd; }
+        .download { display:block; margin-top:15px; text-align:center; }
+        .download a { text-decoration:none; color:#667eea; font-weight:bold; }
+        .download a:hover { text-decoration:underline; }
     </style>
 </head>
 <body>
@@ -66,18 +18,23 @@
     <h2>{{ note.title }} 📄</h2>
     <p>{{ note.content }}</p>
 
-    <div class="file-preview">
-        {% if note.filename.endswith(".pdf") %}
-        <iframe src="/uploads/{{ note.filename }}" type="application/pdf"></iframe>
-        {% elif note.filename.endswith(".jpg") or note.filename.endswith(".jpeg") or note.filename.endswith(".png") %}
-        <img src="/uploads/{{ note.filename }}" alt="Note File">
-        {% else %}
-        <p>📂 File cannot be previewed. Please download instead.</p>
-        {% endif %}
+    {% if note.filename %}
+    {% set file_url = '/uploads/' + note.filename %}
+    {% if note.filename.endswith('.pdf') %}
+    <iframe src="{{ file_url }}" height="600"></iframe>
+    {% elif note.filename.endswith(('.png','.jpg','.jpeg','.gif')) %}
+    <img src="{{ file_url }}" alt="Note Image">
+    {% else %}
+    <p>Unsupported file type. <a href="{{ file_url }}" download>Download File</a></p>
+    {% endif %}
+    <div class="download">
+        <a href="{{ file_url }}" download>⬇ Download</a>
     </div>
+    {% else %}
+    <p>No file uploaded for this note.</p>
+    {% endif %}
 
-    <a href="/uploads/{{ note.filename }}" class="download-link" download>⬇ Download File</a>
-    <a href="/mynotes" class="back-link">⬅ Back to My Notes</a>
+    <p style="margin-top:20px; text-align:center;"><a href="/mynotes">⬅ Back to My Notes</a></p>
 </div>
 </body>
 </html>
