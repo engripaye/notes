@@ -100,11 +100,15 @@ async def login_user(
 
 
 @app.get("/dashboard", response_class=HTMLResponse)
-async def dashboard(request: Request):
+async def dashboard(request: Request, success: str = None):
     username = session_data.get("user")
     if not username:
         return RedirectResponse("/", status_code=302)
-    return templates.TemplateResponse("dashboard.html", {"request": request, "username": username})
+
+    msg = "✅ Note successfully uploaded!" if success else None
+    return templates.TemplateResponse(
+        "dashboard.html",
+        {"request": request, "username": username, "msg": msg})
 
 
 @app.post("/notes")
@@ -128,7 +132,8 @@ async def upload_note(
     db.add(note)
     db.commit()
 
-    return RedirectResponse("/dashboard", status_code=302)
+    # ✅ redirect with a query param
+    return RedirectResponse("/dashboard?success=1", status_code=302)
 
 
 @app.get("/notes")
@@ -155,7 +160,7 @@ async def get_notes(db: Session = Depends(get_db)):
 # MY NOTES
 @app.get("/mynotes", response_class=HTMLResponse)
 async def my_notes(request: Request, db: Session = Depends(get_db)):
-    username = request.session.get("user")
+    username = session_data.get("user")
     if not username:
         return RedirectResponse("/login", status_code=303)
 
@@ -166,3 +171,4 @@ async def my_notes(request: Request, db: Session = Depends(get_db)):
         "mynotes.html",
         {"request": request, "username": username, "notes": notes}
     )
+

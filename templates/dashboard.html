@@ -60,6 +60,12 @@
         <button type="submit">Upload Note</button>
     </form>
 
+    {% if msg %}
+    <p style="background:#e0ffe0; color:#2e7d32; padding:10px; border-radius:6px; text-align:center; margin-bottom:15px;">
+        {{ msg }}
+    </p>
+    {% endif %}
+
     <div class="links">
         <a href="/mynotes">📑 View My Notes</a> |
         <a href="/login">🚪 Logout</a>
