@@ -6,98 +6,87 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #ece9e6, #ffffff);
+            background: linear-gradient(to right, #8360c3, #2ebf91);
             margin: 0;
             padding: 0;
             color: #333;
         }
 
         .container {
-            max-width: 900px;
-            margin: 40px auto;
-            background: #fff;
-            border-radius: 12px;
+            width: 80%;
+            margin: 50px auto;
+            background: white;
+            border-radius: 15px;
             padding: 30px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            animation: fadeIn 0.8s ease-in-out;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         }
 
         h2 {
             text-align: center;
             color: #2c3e50;
-            margin-bottom: 25px;
+            font-size: 28px;
+            margin-bottom: 20px;
         }
 
         .notes-list {
             list-style: none;
             padding: 0;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
         }
 
         .note-item {
-            background: #f9f9f9;
-            border-radius: 10px;
+            background: #f4f7fb;
+            margin: 15px 0;
             padding: 20px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-            transition: transform 0.2s, box-shadow 0.2s;
+            border-left: 6px solid #2ebf91;
+            border-radius: 10px;
+            transition: transform 0.2s;
         }
 
         .note-item:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+            transform: scale(1.02);
         }
 
         .note-item h3 {
-            margin-top: 0;
+            margin: 0 0 10px;
             color: #34495e;
-            font-size: 1.3em;
         }
 
         .note-item p {
-            margin: 10px 0;
-            line-height: 1.5;
+            margin: 0 0 10px;
             color: #555;
         }
 
         .note-item a {
             display: inline-block;
-            margin-top: 10px;
             text-decoration: none;
-            color: #2980b9;
-            font-weight: bold;
-            transition: color 0.2s;
+            color: white;
+            background: #2ebf91;
+            padding: 8px 15px;
+            border-radius: 6px;
+            transition: background 0.3s;
         }
 
         .note-item a:hover {
-            color: #1abc9c;
-        }
-
-        .empty-msg {
-            text-align: center;
-            color: #888;
-            font-size: 1.1em;
-            margin-top: 30px;
+            background: #218c74;
         }
 
         .back-link {
             display: block;
             text-align: center;
-            margin-top: 30px;
-            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .back-link a {
             text-decoration: none;
-            color: #2c3e50;
-            transition: color 0.2s;
+            color: white;
+            background: #8360c3;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: background 0.3s;
         }
 
-        .back-link:hover {
-            color: #16a085;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .back-link a:hover {
+            background: #5a3f94;
         }
     </style>
 </head>
@@ -110,20 +99,20 @@
         {% for note in notes %}
         <li class="note-item">
             <h3>{{ note.title }}</h3>
-            <p>{{ note.content or "✏️ No content added." }}</p>
+            <p>{{ note.content }}</p>
             {% if note.filename %}
-            <a href="/viewfile/{{ note.id }}">📂 View File</a>
-            {% endif %}
-            <p style="color:#999; font-style:italic;">No file attached</p>
+            <a href="/uploads/{{ note.filename }}" target="_blank">📂 View File</a>
             {% endif %}
         </li>
         {% endfor %}
     </ul>
     {% else %}
-    <p class="empty-msg">No notes uploaded yet.</p>
+    <p style="text-align:center;">No notes uploaded yet.</p>
     {% endif %}
 
-    <a href="/dashboard" class="back-link">⬅ Back to Dashboard</a>
+    <div class="back-link">
+        <a href="/dashboard">⬅ Back to Dashboard</a>
+    </div>
 </div>
 </body>
 </html>
