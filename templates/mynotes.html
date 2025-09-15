@@ -82,6 +82,10 @@
 <div class="container">
     <h2>{{ username }}'s Notes 📒</h2>
 
+    {% if msg %}
+    <p style="color: green; font-weight: bold;">{{ msg }}</p>
+    {% endif %}
+
     {% if notes %}
     <ul class="notes-list">
         {% for note in notes %}
