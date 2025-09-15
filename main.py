@@ -60,7 +60,6 @@ async def login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": Request})
 
 
-
 @app.post("/login")
 async def login_user(
         request: Request,
@@ -142,5 +141,4 @@ async def my_notes(request: Request, db: Session = Depends(get_db)):
         "mynotes.html",
         {"request": request, "username": username, "notes": notes}
     )
-
 
