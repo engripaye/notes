@@ -44,15 +44,18 @@ async def register_page(request: Request):
 
 @app.post("/register")
 async def register_user(
+        request: Request,
         username: str = Form(...),
         email: str = Form(...),
         password: str = Form(...),
         db: Session = Depends(get_db)
 ):
-    user = User(username=username, email=email, password=password)
-    db.add(user)
-    db.commit()
-    return RedirectResponse("/", status_code=302)
+    # check if email already exists
+    existing_user = db.query(User).filter(User.email == email).first()
+    if existing_user:
+        return templates.TemplateResponse(
+            "register.html",
+            {"request": request, "msg": "⚠️ Email already registered try login in. "})
 
 
 @app.get("/login", response_class=HTMLResponse)
