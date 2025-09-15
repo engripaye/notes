@@ -1,7 +1,6 @@
 import os
 import shutil
 import pytest
-import main
 from fastapi.testclient import TestClient
 from main import app, get_db, Base, engine
 from sqlalchemy.orm import sessionmaker
@@ -23,8 +22,18 @@ def override_get_db():
 
 # 🔹 Patch template rendering so tests return JSON only
 def fake_template_response(name, context):
-    return JSONResponse(content=context)
+    # filter out non-json objects
+    safe_context = {
+        key: str(value) if not isinstance(value, (str, int, float, list, dict, bool, type(None)))
+        else value
+        for key, value in context.items()
+    }
+    # add templates
+    safe_context["template"] = name
+    return JSONResponse(content=safe_context)
 
+
+import main
 
 main.templates.TemplateResponse = fake_template_response
 
@@ -52,4 +61,15 @@ def test_ping():
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
 
+
 # TEST REGISTER USER
+def test_register_user():
+    response = client.post("/register", data={
+        "username": "testuser",
+        "email": "testuser@gmail.com",
+        "password": "secret123"
+    })
+    assert response.status_code == 200
+    data = response.json()
+    assert "Registration successful" in data["msg"]
+    assert data["template"] == "login.html"
