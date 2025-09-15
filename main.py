@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
+from typing import Optional
 import shutil
 import os
 
@@ -114,8 +115,8 @@ async def dashboard(request: Request, success: str = None):
 @app.post("/notes")
 async def upload_note(
         title: str = Form(...),
-        content: str = Form(...),
-        file: UploadFile = File(...),
+        content: str = Form(None),  # optional text content
+        file: Optional[UploadFile] = File(None),  # Optional file
         db: Session = Depends(get_db)
 ):
     username = session_data.get("user")
@@ -123,14 +124,20 @@ async def upload_note(
         return RedirectResponse("/", status_code=302)
 
     user = db.query(User).filter(User.username == username).first()
-    file_location = f"uploads/{file.filename}"
 
-    with open(file_location, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+    filename = None
+    if file:
+        os.makedirs("uploads", exist_ok=True)
+        file_location = f"uploads/{file.filename}"
+        with open(file_location, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        filename = file.filename
 
     note = Note(title=title, content=content, filename=file.filename, user_id=user.id)
     db.add(note)
     db.commit()
+
+    return RedirectResponse("/dashboard?success=1", status_code=302)
 
     # ✅ redirect with a query param
     return RedirectResponse("/dashboard?success=1", status_code=302)
@@ -171,4 +178,3 @@ async def my_notes(request: Request, db: Session = Depends(get_db)):
         "mynotes.html",
         {"request": request, "username": username, "notes": notes}
     )
-
