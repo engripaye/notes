@@ -15,7 +15,7 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-#uploads folder
+# uploads folder
 os.makedirs("uploads", exist_ok=True)
 
 # STATIC + TEMPLATES
@@ -129,16 +129,21 @@ async def upload_note(
     user = db.query(User).filter(User.username == username).first()
 
     filename = None
-    if file:
-        file_location = f"uploads/{file.filename}"
+    if file and file.filename:  # check if a file is uploaded
+        os.makedirs("uploads", exist_ok=True)
+        file_location = os.path.join("uploads", file.filename)
         with open(file_location, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
         filename = file.filename
 
-    note = Note(title=title, content=content, filename=file.filename, user_id=user.id)
+    note = Note(
+        title=title,
+        content=content,
+        filename=file.filename,
+        user_id=user.id)
+
     db.add(note)
     db.commit()
-
 
     # ✅ redirect with a query param
     return RedirectResponse("/dashboard?success=1", status_code=302)

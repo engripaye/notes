@@ -6,87 +6,75 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(to right, #8360c3, #2ebf91);
+            background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
             margin: 0;
             padding: 0;
-            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
         }
-
         .container {
-            width: 80%;
-            margin: 50px auto;
             background: white;
-            border-radius: 15px;
+            margin-top: 40px;
             padding: 30px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            box-shadow: 0px 8px 20px rgba(0,0,0,0.15);
+            width: 90%;
+            max-width: 800px;
         }
-
         h2 {
             text-align: center;
-            color: #2c3e50;
-            font-size: 28px;
+            color: #333;
             margin-bottom: 20px;
         }
-
         .notes-list {
             list-style: none;
             padding: 0;
         }
-
         .note-item {
-            background: #f4f7fb;
-            margin: 15px 0;
-            padding: 20px;
-            border-left: 6px solid #2ebf91;
+            background: #f9f9f9;
+            border-left: 5px solid #6c63ff;
+            padding: 15px 20px;
+            margin-bottom: 15px;
             border-radius: 10px;
-            transition: transform 0.2s;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-
         .note-item:hover {
             transform: scale(1.02);
+            box-shadow: 0px 5px 15px rgba(0,0,0,0.1);
         }
-
         .note-item h3 {
-            margin: 0 0 10px;
-            color: #34495e;
+            margin: 0 0 10px 0;
+            color: #6c63ff;
         }
-
         .note-item p {
-            margin: 0 0 10px;
-            color: #555;
+            margin: 0 0 10px 0;
+            color: #444;
         }
-
         .note-item a {
             display: inline-block;
-            text-decoration: none;
+            padding: 6px 12px;
+            background: #6c63ff;
             color: white;
-            background: #2ebf91;
-            padding: 8px 15px;
-            border-radius: 6px;
-            transition: background 0.3s;
-        }
-
-        .note-item a:hover {
-            background: #218c74;
-        }
-
-        .back-link {
-            display: block;
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .back-link a {
-            text-decoration: none;
-            color: white;
-            background: #8360c3;
-            padding: 10px 20px;
             border-radius: 8px;
-            transition: background 0.3s;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.3s ease;
         }
-
-        .back-link a:hover {
-            background: #5a3f94;
+        .note-item a:hover {
+            background: #574bdb;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #6c63ff;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .back-link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -101,18 +89,16 @@
             <h3>{{ note.title }}</h3>
             <p>{{ note.content }}</p>
             {% if note.filename %}
-            <a href="/uploads/{{ note.filename }}" target="_blank">📂 View File</a>
+            <a href="/viewfile/{{ note.id }}">📂 View File</a>
             {% endif %}
         </li>
         {% endfor %}
     </ul>
     {% else %}
-    <p style="text-align:center;">No notes uploaded yet.</p>
+    <p>No notes uploaded yet.</p>
     {% endif %}
 
-    <div class="back-link">
-        <a href="/dashboard">⬅ Back to Dashboard</a>
-    </div>
+    <p><a href="/dashboard" class="back-link">⬅ Back to Dashboard</a></p>
 </div>
 </body>
 </html>
