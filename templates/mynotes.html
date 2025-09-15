@@ -94,6 +94,7 @@
             <p>{{ note.content }}</p>
             {% if note.filename %}
             <a href="/viewfile/{{ note.id }}">📂 View File</a>
+            {% endif %}
             <a href="/editnote/{{ note.id }}">✏️ Edit</a>
             <a href="/deletenote/{{ note.id }}" onclick="return confirm('Are you sure you want to delete this note?');">🗑️ Delete</a>
             {% endif %}

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Form, UploadFile, File, Depends, HTTPException
+from fastapi import FastAPI, Query, Request, Form, UploadFile, File, Depends, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -172,7 +172,10 @@ async def get_notes(db: Session = Depends(get_db)):
 
 # MY NOTES
 @app.get("/mynotes", response_class=HTMLResponse)
-async def my_notes(request: Request, updated: str,  db: Session = Depends(get_db)):
+async def my_notes(
+    request: Request,
+    updated: str = Query(None),
+    db: Session = Depends(get_db)):
     username = session_data.get("user")
     if not username:
         return RedirectResponse("/login", status_code=303)
