@@ -57,7 +57,7 @@ async def register_user(
 
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
-    return templates.TemplateResponse("login.html", {"request": Request})
+    return templates.TemplateResponse("login.html", {"request": request})
 
 
 @app.post("/login")
