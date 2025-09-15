@@ -150,53 +150,46 @@ p {
     text-decoration: underline;
 }
 
-/* Auth page container */
+/* Auth page container (Login/Register) */
 .auth-container {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(135deg, #4CAF50, #2E8B57);
+    background: linear-gradient(135deg, #667eea, #764ba2); /* blue-purple */
     padding: 20px;
     gap: 40px;
     color: #fff;
 }
 
 /* Welcome section */
-.welcome-section {
-    max-width: 400px;
-}
-
 .welcome-section h1 {
     font-size: 32px;
     margin-bottom: 15px;
+    color: #fff; /* white text stands out */
 }
 
 .welcome-section .brand {
-    color: #FFD700;
+    color: #FFD700; /* gold highlight */
     font-weight: bold;
 }
 
-.welcome-section p {
-    font-size: 16px;
-    line-height: 1.6;
-}
-
-/* Login form */
+/* Login/Register card */
 .form-section {
     background: #fff;
-    color: #333;
+    color: #2C3E50; /* dark navy, better than black */
     padding: 30px;
     border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-    width: 300px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    width: 320px;
 }
 
 .form-section h2 {
     margin-bottom: 20px;
-    color: #2E8B57;
+    color: #764ba2; /* purple accent */
 }
 
+/* Inputs */
 .form-section input {
     display: block;
     width: 100%;
@@ -204,25 +197,33 @@ p {
     margin-bottom: 15px;
     border: 1px solid #ccc;
     border-radius: 6px;
+    font-size: 15px;
+    color: #2C3E50;
 }
 
+/* Buttons */
 .form-section button {
     width: 100%;
     padding: 12px;
-    background: #4CAF50;
+    background: linear-gradient(135deg, #667eea, #764ba2);
     border: none;
     color: #fff;
     font-size: 16px;
     border-radius: 6px;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: opacity 0.3s ease;
 }
 
 .form-section button:hover {
-    background: #45a049;
+    opacity: 0.9;
 }
 
+/* Error message */
 .error-msg {
-    color: red;
+    background: #ffe0e0;
+    color: #d9534f;
+    padding: 10px;
+    border-radius: 6px;
     margin-top: 10px;
+    font-size: 14px;
 }
