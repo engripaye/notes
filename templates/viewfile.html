@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View File</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background: linear-gradient(135deg, #ece9e6, #ffffff);
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .file-preview {
+            margin: 20px 0;
+        }
+
+        iframe, img {
+            width: 100%;
+            max-height: 600px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .download-link, .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 18px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 6px;
+            transition: opacity 0.2s;
+        }
+
+        .download-link:hover, .back-link:hover {
+            opacity: 0.9;
+        }
+
+        .back-link {
+            background: #16a085;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>{{ note.title }} 📄</h2>
+    <p>{{ note.content }}</p>
+
+    <div class="file-preview">
+        {% if note.filename.endswith(".pdf") %}
+        <iframe src="/uploads/{{ note.filename }}" type="application/pdf"></iframe>
+        {% elif note.filename.endswith(".jpg") or note.filename.endswith(".jpeg") or note.filename.endswith(".png") %}
+        <img src="/uploads/{{ note.filename }}" alt="Note File">
+        {% else %}
+        <p>📂 File cannot be previewed. Please download instead.</p>
+        {% endif %}
+    </div>
+
+    <a href="/uploads/{{ note.filename }}" class="download-link" download>⬇ Download File</a>
+    <a href="/mynotes" class="back-link">⬅ Back to My Notes</a>
+</div>
+</body>
+</html>
