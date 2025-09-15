@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Form, UploadFile, File, Depends
+from fastapi import FastAPI, Request, Form, UploadFile, File, Depends, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -177,4 +177,20 @@ async def my_notes(request: Request, db: Session = Depends(get_db)):
     return templates.TemplateResponse(
         "mynotes.html",
         {"request": request, "username": username, "notes": notes}
+    )
+
+@app.get("/viewfile/{note_id}", response_class=HTMLResponse)
+async def view_file(request: Request, note_id: int, db: Session = Depends(get_db)):
+    username = session_data.get("user")
+    if not username:
+        return RedirectResponse("/login", status_code=303)
+
+    # fetch note
+    note = db.query(Note).filter(Note.id == note_id).first()
+    if not note:
+        raise HTTPException(status_code=404, detail="Note not found")
+
+    return templates.TemplateResponse(
+        "viewfile.html",
+        {"request": request, "note": note}
     )

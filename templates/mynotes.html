@@ -112,7 +112,7 @@
             <h3>{{ note.title }}</h3>
             <p>{{ note.content or "✏️ No content added." }}</p>
             {% if note.filename %}
-            <a href="/uploads/{{ note.filename }}" target="_blank">📂 View File</a>
+            <a href="/viewfile/{{ note.id }}">📂 View File</a>
             {% else %}
             <p style="color:#999; font-style:italic;">No file attached</p>
             {% endif %}
