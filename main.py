@@ -55,8 +55,27 @@ async def register_user(
     if existing_user:
         return templates.TemplateResponse(
             "register.html",
-            {"request": request, "msg": "⚠️ Email already registered try login in. "})
+            {"request": request, "msg": "⚠️ Email already registered try login in."})
 
+    # check password length
+    if len(password) < 6:
+        return templates.TemplateResponse(
+            "register.html",
+            {"request": request, "msg": "❌ Password must be at least 6 characters"}
+        )
+
+    # create new user
+    user = User(username=username, email=email, password=password)
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
+
+    # success message
+    return templates.TemplateResponse(
+        "login.html",
+        {"request": request, "msg": "✅ Registration successful! Please log in."}
+    )
 
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
