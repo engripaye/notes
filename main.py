@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Query, Request, Form, UploadFile, File, Depends, HTTPException
+from fastapi import FastAPI, Query, Request, Form, UploadFile, File, Depends, HTTPException, Body
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -267,3 +267,75 @@ async def delete_note(note_id: int, db: Session = Depends(get_db)):
     db.commit()
 
     return RedirectResponse("/mynotes", status_code=303)
+
+
+# ✅ API endpoint: register user
+@app.post("/api/register")
+async def api_register_user(
+        username: str = Body(...),
+        email: str = Body(...),
+        password: str = Body(...),
+        db: Session = Depends(get_db)
+):
+    existing_user = db.query(User).filter(User.email == email).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    if len(password) < 6:
+        raise HTTPException(status_code=400, detail="Password too short")
+
+    user = User(username=username, email=email, password=password)
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+
+    return {"id": user.id, "username": user.username, "email": user.email}
+
+
+# ✅ API endpoint: login
+@app.post("/api/login")
+async def api_login(
+        email: str = Body(...),
+        password: str = Body(...),
+        db: Session = Depends(get_db)
+):
+    user = db.query(User).filter(User.email == email, User.password == password).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+
+    session_data["user"] = user.username
+    return {"message": "Login successful", "username": user.username}
+
+
+# ✅ API endpoint: upload note
+@app.post("/api/notes")
+async def api_upload_note(
+        title: str = Body(...),
+        content: Optional[str] = Body(None),
+        db: Session = Depends(get_db)
+):
+    username = session_data.get("user")
+    if not username:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    user = db.query(User).filter(User.username == username).first()
+
+    note = Note(title=title, content=content, user_id=user.id)
+    db.add(note)
+    db.commit()
+    db.refresh(note)
+
+    return {"id": note.id, "title": note.title, "content": note.content}
+
+
+# ✅ API endpoint: get notes
+@app.get("/api/notes")
+async def api_get_notes(db: Session = Depends(get_db)):
+    username = session_data.get("user")
+    if not username:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    user = db.query(User).filter(User.username == username).first()
+    notes = db.query(Note).filter(Note.user_id == user.id).all()
+
+    return [{"id": n.id, "title": n.title, "content": n.content} for n in notes]

@@ -1,75 +1,62 @@
-import os
-import shutil
 import pytest
 from fastapi.testclient import TestClient
-from main import app, get_db, Base, engine
+from main import app, Base, engine, get_db, session_data
 from sqlalchemy.orm import sessionmaker
-from fastapi.responses import JSONResponse
 
-# set up test database
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-
-# override dependency
+# Override DB
 def override_get_db():
+    db = TestingSessionLocal()
     try:
-        db = TestingSessionLocal()
         yield db
     finally:
         db.close()
 
-
-# 🔹 Patch template rendering so tests return JSON only
-def fake_template_response(name, context):
-    # filter out non-json objects
-    safe_context = {
-        key: str(value) if not isinstance(value, (str, int, float, list, dict, bool, type(None)))
-        else value
-        for key, value in context.items()
-    }
-    # add templates
-    safe_context["template"] = name
-    return JSONResponse(content=safe_context)
-
-
-import main
-
-main.templates.TemplateResponse = fake_template_response
-
-# Dependency override
 app.dependency_overrides[get_db] = override_get_db
 client = TestClient(app)
 
-
-@pytest.fixture(scope="module", autouse=True)
+@pytest.fixture(autouse=True)
 def setup_and_teardown():
-    # fresh DB
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
-    os.makedirs("uploads", exist_ok=True)
+    session_data.clear()
     yield
-    # cleanup
     Base.metadata.drop_all(bind=engine)
-    if os.path.exists("uploads"):
-        shutil.rmtree("uploads")
 
 
-# TEST PING
-def test_ping():
-    response = client.get("/ping")
-    assert response.status_code == 200
-    assert response.json() == {"status": "ok"}
-
-
-# TEST REGISTER USER
-def test_register_user():
-    response = client.post("/register", data={
-        "username": "testuser",
-        "email": "testuser@gmail.com",
+def test_register_and_login():
+    # Register user
+    response = client.post("/api/register", json={
+        "username": "alice",
+        "email": "alice@example.com",
         "password": "secret123"
     })
     assert response.status_code == 200
-    data = response.json()
-    assert "Registration successful" in data["msg"]
-    assert data["template"] == "login.html"
+    assert response.json()["username"] == "alice"
+
+    # Login user
+    response = client.post("/api/login", json={
+        "email": "alice@example.com",
+        "password": "secret123"
+    })
+    assert response.status_code == 200
+    assert response.json()["message"] == "Login successful"
+
+def test_create_and_get_notes():
+    # Register + Login
+    client.post("/api/register", json={"username": "bob", "email": "bob@example.com", "password": "mypassword"})
+    client.post("/api/login", json={"email": "bob@example.com", "password": "mypassword"})
+
+    # Create note
+    response = client.post("/api/notes", json={"title": "Test Note", "content": "This is a note"})
+    assert response.status_code == 200
+    assert response.json()["title"] == "Test Note"
+
+    # Fetch notes
+    response = client.get("/api/notes")
+    assert response.status_code == 200
+    notes = response.json()
+    assert len(notes) == 1
+    assert notes[0]["title"] == "Test Note"
