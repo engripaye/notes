@@ -207,6 +207,7 @@ async def view_file(request: Request, note_id: int, db: Session = Depends(get_db
 def ping():
     return {"status": "ok"}
 
+
 @app.get("/editnote/{note_id}", response_class=HTMLResponse)
 async def edit_note_page(request: Request, note_id: int, db: Session = Depends(get_db)):
     username = session_data.get("user")
@@ -222,10 +223,10 @@ async def edit_note_page(request: Request, note_id: int, db: Session = Depends(g
 
 @app.get("/editnote/{note_id}")
 async def update_note(
-    note_id: int,
-    title: str = Form(...),
-    content: str = Form(None),
-    db: Session = Depends(get_db)
+        note_id: int,
+        title: str = Form(...),
+        content: str = Form(None),
+        db: Session = Depends(get_db)
 ):
     username = session_data.get("user")
     if not username:
@@ -235,8 +236,7 @@ async def update_note(
     if not note:
         raise HTTPException(status_code=404, detail="Note not found")
 
-
-    #update fields
+    # update fields
     note.title = title
     note.content = content
     db.commit()
@@ -245,7 +245,7 @@ async def update_note(
 
 
 @app.get("/deletenote/{note_id}")
-async def delete_note(note_id: int, db:Session = Depends(get_db)):
+async def delete_note(note_id: int, db: Session = Depends(get_db)):
     username = session_data.get("user")
     if not username:
         return RedirectResponse("/login", status_code=303)
@@ -254,9 +254,7 @@ async def delete_note(note_id: int, db:Session = Depends(get_db)):
     if not note:
         raise HTTPException(status_code=404, detail="Note not found")
 
-
     db.delete(note)
     db.commit()
 
     return RedirectResponse("/mynotes", status_code=303)
-
