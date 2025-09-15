@@ -269,7 +269,11 @@ async def delete_note(note_id: int, db: Session = Depends(get_db)):
     return RedirectResponse("/mynotes", status_code=303)
 
 
-# ✅ API endpoint: register user
+# ========================
+# JSON API ENDPOINTS
+# ========================
+
+# REGISTER
 @app.post("/api/register")
 async def api_register_user(
         username: str = Body(...),
@@ -292,7 +296,7 @@ async def api_register_user(
     return {"id": user.id, "username": user.username, "email": user.email}
 
 
-# ✅ API endpoint: login
+# LOGIN
 @app.post("/api/login")
 async def api_login(
         email: str = Body(...),
@@ -307,7 +311,7 @@ async def api_login(
     return {"message": "Login successful", "username": user.username}
 
 
-# ✅ API endpoint: upload note
+# CREATE NOTE
 @app.post("/api/notes")
 async def api_upload_note(
         title: str = Body(...),
@@ -319,7 +323,6 @@ async def api_upload_note(
         raise HTTPException(status_code=401, detail="Unauthorized")
 
     user = db.query(User).filter(User.username == username).first()
-
     note = Note(title=title, content=content, user_id=user.id)
     db.add(note)
     db.commit()
@@ -328,7 +331,7 @@ async def api_upload_note(
     return {"id": note.id, "title": note.title, "content": note.content}
 
 
-# ✅ API endpoint: get notes
+# GET ALL NOTES
 @app.get("/api/notes")
 async def api_get_notes(db: Session = Depends(get_db)):
     username = session_data.get("user")
@@ -338,4 +341,61 @@ async def api_get_notes(db: Session = Depends(get_db)):
     user = db.query(User).filter(User.username == username).first()
     notes = db.query(Note).filter(Note.user_id == user.id).all()
 
-    return [{"id": n.id, "title": n.title, "content": n.content} for n in notes]
+    return [
+        {"id": n.id, "title": n.title, "content": n.content, "filename": n.filename}
+        for n in notes
+    ]
+
+
+# GET SINGLE NOTE
+@app.get("/api/notes/{note_id}")
+async def api_get_note(note_id: int, db: Session = Depends(get_db)):
+    username = session_data.get("user")
+    if not username:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    note = db.query(Note).filter(Note.id == note_id).first()
+    if not note:
+        raise HTTPException(status_code=404, detail="Note not found")
+
+    return {"id": note.id, "title": note.title, "content": note.content, "filename": note.filename}
+
+
+# UPDATE NOTE
+@app.put("/api/notes/{note_id}")
+async def api_update_note(
+        note_id: int,
+        title: str = Body(...),
+        content: str = Body(...),
+        db: Session = Depends(get_db)
+):
+    username = session_data.get("user")
+    if not username:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    note = db.query(Note).filter(Note.id == note_id).first()
+    if not note:
+        raise HTTPException(status_code=404, detail="Note not found")
+
+    note.title = title
+    note.content = content
+    db.commit()
+    db.refresh(note)
+
+    return {"id": note.id, "title": note.title, "content": note.content}
+
+
+# DELETE NOTE
+@app.delete("/api/notes/{note_id}")
+async def api_delete_note(note_id: int, db: Session = Depends(get_db)):
+    username = session_data.get("user")
+    if not username:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    note = db.query(Note).filter(Note.id == note_id).first()
+    if not note:
+        raise HTTPException(status_code=404, detail="Note not found")
+
+    db.delete(note)
+    db.commit()
+    return {"message": "Note deleted successfully"}
