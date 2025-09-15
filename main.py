@@ -142,3 +142,5 @@ async def my_notes(request: Request, db: Session = Depends(get_db)):
         {"request": request, "username": username, "notes": notes}
     )
 
+
+
