@@ -2,22 +2,73 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Register</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <title>Register | My Note</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", Tahoma, sans-serif; }
+        body {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; color: #333;
+        }
+        .auth-container {
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; padding: 20px; gap: 40px; color: #fff;
+        }
+        .welcome-section h1 { font-size: 32px; margin-bottom: 15px; color: #fff; }
+        .welcome-section p { font-size: 16px; color: #eee; }
+        .welcome-section .brand { color: #FFD700; font-weight: bold; }
+        .form-section {
+            background: #fff; color: #2C3E50;
+            padding: 30px; border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            width: 340px; animation: fadeIn 0.8s ease-in-out;
+        }
+        .form-section h2 { margin-bottom: 20px; color: #764ba2; text-align: center; }
+        .form-section input {
+            width: 100%; padding: 12px; margin-bottom: 15px;
+            border: 1px solid #ccc; border-radius: 6px;
+            font-size: 15px; outline: none; transition: 0.3s ease;
+        }
+        .form-section input:focus { border-color: #667eea; box-shadow: 0 0 5px rgba(102,126,234,0.5); }
+        .form-section button {
+            width: 100%; padding: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none; color: #fff; font-size: 16px;
+            border-radius: 6px; cursor: pointer; transition: 0.3s ease;
+        }
+        .form-section button:hover { opacity: 0.9; }
+        .form-section a { color: #667eea; text-decoration: none; }
+        .form-section a:hover { text-decoration: underline; }
+        .error-msg {
+            background: #ffe0e0; color: #d9534f;
+            padding: 10px; border-radius: 6px;
+            margin-top: 10px; font-size: 14px; text-align: center;
+        }
+        @keyframes fadeIn { from { opacity:0; transform: translateY(20px);} to {opacity:1; transform: translateY(0);} }
+    </style>
 </head>
 <body>
-<div class="container">
-    <h2>Create Account</h2>
-    <form action="/register" method="post">
-        <input type="text" name="username" placeholder="Enter username" required>
-        <input type="email" name="email" placeholder="Enter email" required>
-        <input type="password" name="password" placeholder="Enter password" required>
-        <button type="submit">Register</button>
-    </form>
-    {% if msg %}
-    <p style="color:red; margin-top:10px;">{{ msg }}</p>
-    {% endif %}
-    <p>Already have an account? <a href="/login">Login</a></p>
+<div class="auth-container">
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+        <h1>Join <span class="brand">My Note</span> 📝</h1>
+        <p>Create your free account and start saving notes securely.</p>
+    </div>
+
+    <!-- Register Form Section -->
+    <div class="form-section">
+        <h2>Create Account</h2>
+        <form action="/register" method="post">
+            <input type="text" name="username" placeholder="Enter username" required>
+            <input type="email" name="email" placeholder="Enter email" required>
+            <input type="password" name="password" placeholder="Enter password" required>
+            <button type="submit">Register</button>
+        </form>
+        {% if msg %}
+        <p class="error-msg">{{ msg }}</p>
+        {% endif %}
+        <p>Already have an account? <a href="/login">Login</a></p>
+    </div>
 </div>
 </body>
 </html>

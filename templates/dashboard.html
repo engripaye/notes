@@ -2,14 +2,57 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <title>Dashboard | My Note</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:"Segoe UI", Tahoma, sans-serif; }
+        body {
+            background: #f3f4f7;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 40px;
+        }
+        .dashboard-container {
+            background: #fff;
+            width: 100%; max-width: 800px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+            padding: 30px;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+        .dashboard-header {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+        form {
+            display: flex; flex-direction: column; gap: 15px;
+            margin-bottom: 20px;
+        }
+        input, textarea, button {
+            padding: 12px; border-radius: 8px;
+            border: 1px solid #ddd; font-size: 15px;
+            outline: none; transition: all 0.3s ease;
+        }
+        input:focus, textarea:focus { border-color:#667eea; box-shadow:0 0 5px rgba(102,126,234,0.5); }
+        textarea { resize: none; height: 80px; }
+        button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color:#fff; border:none; font-weight:bold; cursor:pointer;
+        }
+        button:hover { opacity:0.9; }
+        .links { margin-top:20px; text-align:center; }
+        .links a { color:#667eea; text-decoration:none; font-weight:bold; margin: 0 10px; }
+        .links a:hover { text-decoration:underline; }
+        @keyframes fadeIn { from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);} }
+    </style>
 </head>
 <body>
-<div class="container">
-    <h2 class="dashboard-header">Hello {{ username }} 👋
-        <br> Welcome to Notes API </h2>
+<div class="dashboard-container">
+    <h2 class="dashboard-header">👋 Hello {{ username }}, Welcome to <span style="color:#764ba2;">My Note</span> API</h2>
 
+    <!-- Note Upload Form -->
     <form action="/notes" method="post" enctype="multipart/form-data">
         <input type="text" name="title" placeholder="Note title" required>
         <textarea name="content" placeholder="Write your note..." required></textarea>
@@ -17,9 +60,10 @@
         <button type="submit">Upload Note</button>
     </form>
 
-    <p style="margin-top:20px;">Want to add another note? Just fill the form above ✅ or kindly <a href="/login">Logout</a></p>
-    <p><a href="/mynotes">📑 View My Notes</a></p>
-
+    <div class="links">
+        <a href="/mynotes">📑 View My Notes</a> |
+        <a href="/login">🚪 Logout</a>
+    </div>
 </div>
 </body>
 </html>
