@@ -149,3 +149,80 @@ p {
 .note-item a:hover {
     text-decoration: underline;
 }
+
+/* Auth page container */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #4CAF50, #2E8B57);
+    padding: 20px;
+    gap: 40px;
+    color: #fff;
+}
+
+/* Welcome section */
+.welcome-section {
+    max-width: 400px;
+}
+
+.welcome-section h1 {
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+.welcome-section .brand {
+    color: #FFD700;
+    font-weight: bold;
+}
+
+.welcome-section p {
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+/* Login form */
+.form-section {
+    background: #fff;
+    color: #333;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    width: 300px;
+}
+
+.form-section h2 {
+    margin-bottom: 20px;
+    color: #2E8B57;
+}
+
+.form-section input {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.form-section button {
+    width: 100%;
+    padding: 12px;
+    background: #4CAF50;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.form-section button:hover {
+    background: #45a049;
+}
+
+.error-msg {
+    color: red;
+    margin-top: 10px;
+}

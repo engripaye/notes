@@ -1,21 +1,31 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Login</title>
+    <meta charset="UTF-8">
+    <title>Login | My Note</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-<div class="container">
-    <h2>Welcome to MY NOTE, Login</h2>
-    <form action="/login" method="post">
-        <input type="email" name="email" placeholder="Enter email" required>
-        <input type="password" name="password" placeholder="Enter password" required>
-        <button type="submit">Login</button>
-    </form>
-    {% if msg %}
-    <p style="color:red;">{{ msg }}</p>
-    {% endif %}
-    <p>New user? <a href="/register">Create an account</a></p>
+<div class="auth-container">
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+        <h1>Welcome to <span class="brand">My Note</span> 📝</h1>
+        <p>Your personal space to keep notes, upload files, and stay organized.</p>
+    </div>
+
+    <!-- Login Form Section -->
+    <div class="form-section">
+        <h2>Login</h2>
+        <form action="/login" method="post">
+            <input type="email" name="email" placeholder="Enter email" required>
+            <input type="password" name="password" placeholder="Enter password" required>
+            <button type="submit">Login</button>
+        </form>
+        {% if msg %}
+        <p class="error-msg">{{ msg }}</p>
+        {% endif %}
+        <p>New user? <a href="/register">Create an account</a></p>
+    </div>
 </div>
 </body>
 </html>
