@@ -3,7 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <title>My Notes</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ece9e6, #ffffff);
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 25px;
+        }
+
+        .notes-list {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .note-item {
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .note-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+        }
+
+        .note-item h3 {
+            margin-top: 0;
+            color: #34495e;
+            font-size: 1.3em;
+        }
+
+        .note-item p {
+            margin: 10px 0;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        .note-item a {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #2980b9;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+
+        .note-item a:hover {
+            color: #1abc9c;
+        }
+
+        .empty-msg {
+            text-align: center;
+            color: #888;
+            font-size: 1.1em;
+            margin-top: 30px;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            font-weight: bold;
+            text-decoration: none;
+            color: #2c3e50;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: #16a085;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
 <body>
 <div class="container">
@@ -14,18 +110,20 @@
         {% for note in notes %}
         <li class="note-item">
             <h3>{{ note.title }}</h3>
-            <p>{{ note.content }}</p>
-            {% if note.file_path %}
-            <a href="{{ note.file_path }}" target="_blank">📂 View File</a>
+            <p>{{ note.content or "✏️ No content added." }}</p>
+            {% if note.filename %}
+            <a href="/uploads/{{ note.filename }}" target="_blank">📂 View File</a>
+            {% else %}
+            <p style="color:#999; font-style:italic;">No file attached</p>
             {% endif %}
         </li>
         {% endfor %}
     </ul>
     {% else %}
-    <p>No notes uploaded yet.</p>
+    <p class="empty-msg">No notes uploaded yet.</p>
     {% endif %}
 
-    <p><a href="/dashboard">⬅ Back to Dashboard</a></p>
+    <a href="/dashboard" class="back-link">⬅ Back to Dashboard</a>
 </div>
 </body>
 </html>
