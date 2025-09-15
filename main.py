@@ -173,9 +173,9 @@ async def get_notes(db: Session = Depends(get_db)):
 # MY NOTES
 @app.get("/mynotes", response_class=HTMLResponse)
 async def my_notes(
-    request: Request,
-    updated: str = Query(None),
-    db: Session = Depends(get_db)):
+        request: Request,
+        updated: str = Query(None),
+        db: Session = Depends(get_db)):
     username = session_data.get("user")
     if not username:
         return RedirectResponse("/login", status_code=303)
@@ -226,31 +226,8 @@ async def edit_note_page(request: Request, note_id: int, db: Session = Depends(g
     return templates.TemplateResponse("editnote.html", {"request": request, "note": note})
 
 
-@app.get("/editnote/{note_id}")
-async def update_note(
-        note_id: int,
-        title: str = Form(...),
-        content: str = Form(None),
-        db: Session = Depends(get_db)
-):
-    username = session_data.get("user")
-    if not username:
-        return RedirectResponse("/login", status_code=303)
-
-    note = db.query(Note).filter(Note.id == note_id).first()
-    if not note:
-        raise HTTPException(status_code=404, detail="Note not found")
-
-    # update fields
-    note.title = title
-    note.content = content
-    db.commit()
-
-    return RedirectResponse("/mynotes", status_code=303)
-
-
 # EDIT NOTE SUBMIT (POST)
-@app.post("editnote/{note_id}")
+@app.post("/editnote/{note_id}")
 async def update_note(
         request: Request,
         note_id: int,
