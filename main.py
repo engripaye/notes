@@ -70,12 +70,12 @@ async def register_user(
     db.commit()
     db.refresh(user)
 
-
     # success message
     return templates.TemplateResponse(
         "login.html",
         {"request": request, "msg": "✅ Registration successful! Please log in."}
     )
+
 
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
@@ -93,7 +93,10 @@ async def login_user(
     if user:
         session_data["user"] = user.username
         return RedirectResponse("/dashboard", status_code=302)
-    return templates.TemplateResponse("login.html", {"request": request, "msg": "Invalid login, try again"})
+
+    return templates.TemplateResponse(
+        "login.html",
+        {"request": request, "msg": "❌ Invalid login, please try again."})
 
 
 @app.get("/dashboard", response_class=HTMLResponse)
@@ -163,6 +166,3 @@ async def my_notes(request: Request, db: Session = Depends(get_db)):
         "mynotes.html",
         {"request": request, "username": username, "notes": notes}
     )
-
-
-
