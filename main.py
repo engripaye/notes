@@ -55,6 +55,12 @@ async def register_user(
     return RedirectResponse("/", status_code=302)
 
 
+@app.get("/login", response_class=HTMLResponse)
+async def login_page(request: Request):
+    return templates.TemplateResponse("login.html", {"request": Request})
+
+
+
 @app.post("/login")
 async def login_user(
         request: Request,
