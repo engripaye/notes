@@ -76,6 +76,19 @@
         .back-link:hover {
             text-decoration: underline;
         }
+        .note-actions a {
+            margin-right: 10px;
+            padding: 6px 12px;
+            background: #6c63ff;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+        .note-actions a:hover {
+            background: #574bdb;
+        }
     </style>
 </head>
 <body>
@@ -92,11 +105,14 @@
         <li class="note-item">
             <h3>{{ note.title }}</h3>
             <p>{{ note.content }}</p>
-            {% if note.filename %}
-            <a href="/viewfile/{{ note.id }}">📂 View File</a>
-            {% endif %}
-            <a href="/editnote/{{ note.id }}">✏️ Edit</a>
-            <a href="/deletenote/{{ note.id }}" onclick="return confirm('Are you sure you want to delete this note?');">🗑️ Delete</a>
+            <div class="note-actions">
+                {% if note.filename %}
+                <a href="/viewfile/{{ note.id }}">📂 View File</a>
+                {% endif %}
+                <a href="/editnote/{{ note.id }}">✏️ Edit</a>
+                <a href="/deletenote/{{ note.id }}" onclick="return confirm('Are you sure you want to delete this note?');">🗑️ Delete</a>
+            </div>
+
             {% endif %}
         </li>
         {% endfor %}
