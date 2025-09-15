@@ -244,6 +244,33 @@ async def update_note(
     return RedirectResponse("/mynotes", status_code=303)
 
 
+# EDIT NOTE SUBMIT (POST)
+@app.post("editnote/{note_id}")
+async def update_note(
+        request: Request,
+        note_id: int,
+        title: str = Form(...),
+        content: str = Form(...),
+        db: Session = Depends(get_db)
+):
+    username = session_data.get("user")
+    if not username:
+        return RedirectResponse("/login", status_code=303)
+
+    note = db.query(Note).filter(Note.id == note_id).first()
+    if not note:
+        raise HTTPException(status_code=404, detail="Note not found")
+
+    # update values
+    note.title = title
+    note.content = content
+    db.commit()
+    db.refresh(note)
+
+    # redirect back with message
+    return RedirectResponse("/mynotes", status_code=303)
+
+
 @app.get("/deletenote/{note_id}")
 async def delete_note(note_id: int, db: Session = Depends(get_db)):
     username = session_data.get("user")
