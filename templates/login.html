@@ -6,7 +6,7 @@
 </head>
 <body>
 <div class="container">
-    <h2>Login</h2>
+    <h2>Welcome to MY NOTE, Login</h2>
     <form action="/login" method="post">
         <input type="email" name="email" placeholder="Enter email" required>
         <input type="password" name="password" placeholder="Enter password" required>
@@ -15,7 +15,7 @@
     {% if msg %}
     <p style="color:red;">{{ msg }}</p>
     {% endif %}
-    <p>New user? <a href="/register">Register</a></p>
+    <p>New user? <a href="/register">Create an account</a></p>
 </div>
 </body>
 </html>
