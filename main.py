@@ -9,7 +9,7 @@ import os
 import secrets
 from database import Base, engine, SessionLocal
 from models import User, Note
-from fastapi_mail import ConnectionConfig
+from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 
 conf = ConnectionConfig(
     MAIL_USERNAME="your_email@gmail.com",       # Your Gmail
@@ -431,12 +431,37 @@ async def forget_password(request: Request, email: str = Form(...), db: Session 
     user.reset_token = token
     db.commit()
 
-    # in real life: send email
-    reset_link = f"/reset-password/{token}"
-    return templates.TemplateResponse("forgot_password.html", {
-        "request": request,
-        "msg": f"✅ Reset link generated! Visit {reset_link} "
-    })
+    # reset password link
+    reset_link = f"http://127.0.0.1:8000/reset-password/{token}"  # Use your domain in production
+
+    # send email via FastAPI-mail
+    message = MessageSchema(
+        subject="Reset Your My Note Password",
+        recipients=[user.email],
+        body=f"""
+        Hello {user.username},
+        
+        You requested to reset your password. Click the link below to reset it:
+        
+        {reset_link}
+        
+        If you did not request this, ignore this email.
+        
+        Regards, 
+        My Note Team By ENGR. IPAYE
+        """,
+        subtype=MessageType.plain
+    )
+
+    fm = FastMail(conf)
+    await fm.send_message(message)
+
+    return templates.TemplateResponse(
+        "forgot_password.html",
+        {
+            "request": request, "msg": "✅ Reset link sent! Check your email inbox."
+        }
+    )
 
 
 # RESET PASSWORD PAGE
