@@ -1,8 +1,18 @@
+import os
+import sys
+
+# Set fake env vars for testing
+os.environ["MAIL_USERNAME"] = "test@example.com"
+os.environ["MAIL_PASSWORD"] = "testpassword"
+os.environ["MAIL_FROM"] = "test@example.com"
+
+# Add parent directory to Python path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from fastapi_mail import FastMail
 import pytest
 from fastapi.testclient import TestClient
 from starlette.responses import HTMLResponse, JSONResponse
-
 from main import app, Base, engine, get_db, session_data
 from sqlalchemy.orm import sessionmaker
 
