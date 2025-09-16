@@ -404,7 +404,7 @@ async def api_delete_note(note_id: int, db: Session = Depends(get_db)):
 # FORGOT PASSWORD PAGE
 @app.get("/forgot-password", response_class=HTMLResponse)
 async def forget_password_page(request: Request):
-    return templates.TemplateResponse("forget_password.html", {"request": request})
+    return templates.TemplateResponse("forgot_password.html", {"request": request})
 
 
 @app.post("/forgot-password")
