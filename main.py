@@ -428,3 +428,27 @@ async def forget_password(request: Request, email: str = Form(...), db: Session 
 
 # RESET PASSWORD PAGE
 @app.get("/reset-password/{token}", response_class=HTMLResponse)
+async def reset_password_page(request: Request, token: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.reset_token == token).first()
+    if not user:
+        raise HTTPException(status_code=400, detail="Invalid or expired token")
+    return templates.TemplateResponse("reset_password.html", {"request": request, "token": token})
+
+
+@app.post("/reset-password/{token}")
+async def reset_password(request: Request, token: str, password: str = Form(...), db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.reset_token == token).first()
+    if not user:
+        raise HTTPException(status_code=400, detail= "Invalid or expired token")
+
+    if len(password) < 6:
+        return templates.TemplateResponse("reset_password.html", {
+            "request": request, "token": token, "msg": "❌ Password must be at least 6 characters"
+        })
+
+    #update password
+    user.password = password
+    user.reset_token = None
+    db.commit()
+
+    return templates.TemplateResponse("login.html", {"request": request, "msg": "✅ Password reset successful! Please log in."})
