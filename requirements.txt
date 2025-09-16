@@ -6,3 +6,6 @@ python-multipart==0.0.9
 pytest
 fastapi-mail
 pydantic-settings
+gunicorn
+email-validator
+databases
