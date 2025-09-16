@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from typing import Optional
 import shutil
 import os
-
+import secrets
 from database import Base, engine, SessionLocal
 from models import User, Note
 
@@ -399,3 +399,32 @@ async def api_delete_note(note_id: int, db: Session = Depends(get_db)):
     db.delete(note)
     db.commit()
     return {"message": "Note deleted successfully"}
+
+
+# FORGOT PASSWORD PAGE
+@app.get("/forget-password", response_class=HTMLResponse)
+async def forget_password_page(request: Request):
+    return templates.TemplateResponse("forget_password.html", {"request": request})
+
+
+@app.post("/forget-password")
+async def forget_password(request: Request, email: str = Form(...), db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        return templates.TemplateResponse("forgot_password.html", {"request": request, "msg": "❌ Email not found."})
+
+    # generate reset token
+    token = secrets.token_urlsafe(32)
+    user.reset_token = token
+    db.commit()
+
+    # in real life: send email
+    reset_link = f"/reset-password/{token}"
+    return templates.TemplateResponse("forgot_password.html", {
+        "request": request,
+        "msg": f"✅ Reset link generated! Visit {reset_link} "
+    })
+
+
+# RESET PASSWORD PAGE
+@app.get("/reset-password/{token}", response_class=HTMLResponse)

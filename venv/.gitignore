@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environmentgit rm --cached notes.db test/notes.db
+                     #git rm -r --cached .idea
+                     #git add .gitignore
+                     #git commit -m "Clean repo: ignore DBs and IDE files"
+                     #git push
+venv/
+
+# Databases
+*.db
+
+# IDE
+.idea/
+.vscode/

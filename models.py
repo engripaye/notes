@@ -8,8 +8,9 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
-    email = Column(String, unique=True, index=False)
+    email = Column(String, unique=True, index=True)
     password = Column(String)
+    reset_token = Column(String, nullable=True)
     notes = relationship("Note", back_populates="user")
 
 
