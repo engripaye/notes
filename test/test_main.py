@@ -1,5 +1,8 @@
+from fastapi_mail import FastMail
 import pytest
 from fastapi.testclient import TestClient
+from starlette.responses import HTMLResponse, JSONResponse
+
 from main import app, Base, engine, get_db, session_data
 from sqlalchemy.orm import sessionmaker
 
@@ -219,3 +222,27 @@ def test_create_and_get_notes():
     notes = response.json()
     assert len(notes) == 1
     assert notes[0]["title"] == "Test Note"
+
+
+def test_forgot_and_reset_password(monkeypatch):
+    # ✅ Mock email sending
+    async def fake_send_message(*args, **kwargs):
+        return True
+    monkeypatch.setattr(FastMail, "send_message", fake_send_message)
+
+    # ✅ Mock TemplateResponse to return JSON instead of HTML
+    monkeypatch.setattr("main.templates.TemplateResponse",
+                        lambda *args, **kwargs: JSONResponse({"message": "Reset link sent"})
+                        )
+
+    # Register User
+    client.post("/api/register", json={
+        "username": "resetuser",
+        "email": "reset@example.com",
+        "password": "oldpassword"
+    })
+
+    # Forgot password request
+    response = client.post("/forgot-password", data={"email": "reset@example.com"})
+    assert response.status_code == 200
+    assert response.json()["message"] == "Reset link sent"
