@@ -402,12 +402,12 @@ async def api_delete_note(note_id: int, db: Session = Depends(get_db)):
 
 
 # FORGOT PASSWORD PAGE
-@app.get("/forget-password", response_class=HTMLResponse)
+@app.get("/forgot-password", response_class=HTMLResponse)
 async def forget_password_page(request: Request):
     return templates.TemplateResponse("forget_password.html", {"request": request})
 
 
-@app.post("/forget-password")
+@app.post("/forgot-password")
 async def forget_password(request: Request, email: str = Form(...), db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == email).first()
     if not user:
