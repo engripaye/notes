@@ -11,17 +11,19 @@ from database import Base, engine, SessionLocal
 from models import User, Note
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 
+
 conf = ConnectionConfig(
     MAIL_USERNAME="your_email@gmail.com",       # Your Gmail
-    MAIL_PASSWORD="your_app_password",          # App password (Gmail)
+    MAIL_PASSWORD="your_app_password",          # Gmail app password
     MAIL_FROM="your_email@gmail.com",
     MAIL_PORT=587,
     MAIL_SERVER="smtp.gmail.com",
-    MAIL_TLS=True,
-    MAIL_SSL=False,
+    MAIL_STARTTLS=True,                         # instead of MAIL_TLS
+    MAIL_SSL_TLS=False,                         # instead of MAIL_SSL
     USE_CREDENTIALS=True,
-    TEMPLATE_FOLDER="templates/email"          # Folder for email templates
+    TEMPLATE_FOLDER="templates/email"
 )
+
 
 # CREATE TABLES
 Base.metadata.create_all(bind=engine)
@@ -113,7 +115,7 @@ async def login_user(
 
     return templates.TemplateResponse(
         "login.html",
-        {"request": request, "msg": "❌ Invalid login, please try again."})
+        {"request": request, "msg": "❌ Invalid username or password, please try again."})
 
 
 @app.get("/dashboard", response_class=HTMLResponse)
@@ -477,16 +479,17 @@ async def reset_password_page(request: Request, token: str, db: Session = Depend
 async def reset_password(request: Request, token: str, password: str = Form(...), db: Session = Depends(get_db)):
     user = db.query(User).filter(User.reset_token == token).first()
     if not user:
-        raise HTTPException(status_code=400, detail= "Invalid or expired token")
+        raise HTTPException(status_code=400, detail="Invalid or expired token")
 
     if len(password) < 6:
         return templates.TemplateResponse("reset_password.html", {
             "request": request, "token": token, "msg": "❌ Password must be at least 6 characters"
         })
 
-    #update password
+    # update password
     user.password = password
     user.reset_token = None
     db.commit()
 
-    return templates.TemplateResponse("login.html", {"request": request, "msg": "✅ Password reset successful! Please log in."})
+    return templates.TemplateResponse("login.html",
+                                      {"request": request, "msg": "✅ Password reset successful! Please log in."})

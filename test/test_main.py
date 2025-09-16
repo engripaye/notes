@@ -6,6 +6,7 @@ from sqlalchemy.orm import sessionmaker
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+
 # Override DB
 def override_get_db():
     db = TestingSessionLocal()
@@ -14,8 +15,10 @@ def override_get_db():
     finally:
         db.close()
 
+
 app.dependency_overrides[get_db] = override_get_db
 client = TestClient(app)
+
 
 @pytest.fixture(autouse=True)
 def setup_and_teardown():
@@ -24,7 +27,6 @@ def setup_and_teardown():
     session_data.clear()
     yield
     Base.metadata.drop_all(bind=engine)
-
 
 
 # ------------------------
@@ -181,6 +183,7 @@ def test_delete_note():
     res = client.get(f"/api/notes/{note_id}")
     assert res.status_code == 404
 
+
 def test_register_and_login():
     # Register user
     response = client.post("/api/register", json={
@@ -199,6 +202,7 @@ def test_register_and_login():
     assert response.status_code == 200
     assert response.json()["message"] == "Login successful"
 
+
 def test_create_and_get_notes():
     # Register + Login
     client.post("/api/register", json={"username": "bob", "email": "bob@example.com", "password": "mypassword"})
@@ -215,4 +219,3 @@ def test_create_and_get_notes():
     notes = response.json()
     assert len(notes) == 1
     assert notes[0]["title"] == "Test Note"
-
