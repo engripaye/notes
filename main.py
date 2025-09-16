@@ -451,7 +451,7 @@ async def forget_password(request: Request, email: str = Form(...), db: Session 
     db.commit()
 
     # reset password link
-    reset_link = f"http://127.0.0.1:8000/reset-password/{token}"  # Use your domain in production
+    reset_link = f"{os.getenv('APP_DOMAIN', 'http://127.0.0.1:8000')}/reset-password/{token}"    # Use your domain in production
 
     # send email via FastAPI-mail
     message = MessageSchema(
