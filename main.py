@@ -9,6 +9,19 @@ import os
 import secrets
 from database import Base, engine, SessionLocal
 from models import User, Note
+from fastapi_mail import ConnectionConfig
+
+conf = ConnectionConfig(
+    MAIL_USERNAME="your_email@gmail.com",       # Your Gmail
+    MAIL_PASSWORD="your_app_password",          # App password (Gmail)
+    MAIL_FROM="your_email@gmail.com",
+    MAIL_PORT=587,
+    MAIL_SERVER="smtp.gmail.com",
+    MAIL_TLS=True,
+    MAIL_SSL=False,
+    USE_CREDENTIALS=True,
+    TEMPLATE_FOLDER="templates/email"          # Folder for email templates
+)
 
 # CREATE TABLES
 Base.metadata.create_all(bind=engine)
