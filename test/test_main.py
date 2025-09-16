@@ -1,10 +1,10 @@
 import os
 import sys
 
-# Set fake env vars for testing
-os.environ["MAIL_USERNAME"] = "test@example.com"
-os.environ["MAIL_PASSWORD"] = "testpassword"
-os.environ["MAIL_FROM"] = "test@example.com"
+# # Set fake env vars for testing
+# os.environ["MAIL_USERNAME"] = "test@example.com"
+# os.environ["MAIL_PASSWORD"] = "testpassword"
+# os.environ["MAIL_FROM"] = "test@example.com"
 
 # Add parent directory to Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
