@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View File</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:"Segoe UI", Tahoma, sans-serif; }
+        body {
+            background:#f4f6f9;
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:flex-start;
+            padding:20px;
+        }
+        .container {
+            background:#fff;
+            width:100%;
+            max-width:900px;
+            padding:25px;
+            border-radius:12px;
+            box-shadow:0 6px 18px rgba(0,0,0,0.1);
+            animation: fadeIn 0.6s ease-in-out;
+        }
+        h2 {
+            color:#333;
+            text-align:center;
+            margin-bottom:15px;
+            font-size:22px;
+        }
+        p { color:#444; margin-bottom:15px; text-align:center; }
+        iframe, img {
+            width:100%;
+            border-radius:8px;
+            border:1px solid #ddd;
+            margin-bottom:15px;
+        }
+        iframe { min-height:500px; }
+        .download {
+            text-align:center;
+            margin-top:10px;
+        }
+        .download a {
+            display:inline-block;
+            padding:10px 18px;
+            background:linear-gradient(135deg,#667eea,#764ba2);
+            color:#fff;
+            border-radius:8px;
+            font-weight:bold;
+            text-decoration:none;
+            transition:opacity 0.3s ease;
+        }
+        .download a:hover { opacity:0.9; }
+        .back-link {
+            display:block;
+            margin-top:20px;
+            text-align:center;
+            text-decoration:none;
+            color:#667eea;
+            font-weight:bold;
+            font-size:15px;
+        }
+        .back-link:hover { text-decoration:underline; }
+
+        /* ✅ Mobile Responsiveness */
+        @media (max-width:600px) {
+            .container { padding:20px; }
+            h2 { font-size:18px; }
+            p { font-size:14px; }
+            iframe { min-height:300px; }
+            .download a { font-size:14px; padding:8px 14px; }
+            .back-link { font-size:14px; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity:0; transform:translateY(20px); }
+            to { opacity:1; transform:translateY(0); }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>{{ note.title }} 📄</h2>
+    <p>{{ note.content }}</p>
+
+    {% if note.filename %}
+    {% set file_url = '/uploads/' + note.filename %}
+    {% if note.filename.endswith('.pdf') %}
+    <iframe src="{{ file_url }}"></iframe>
+    {% elif note.filename.endswith(('.png','.jpg','.jpeg','.gif')) %}
+    <img src="{{ file_url }}" alt="Note Image">
+    {% else %}
+    <p>Unsupported file type. <a href="{{ file_url }}" download>Download File</a></p>
+    {% endif %}
+    <div class="download">
+        <a href="{{ file_url }}" download>⬇ Download</a>
+    </div>
+    {% else %}
+    <p>No file uploaded for this note.</p>
+    {% endif %}
+
+    <a href="/mynotes" class="back-link">⬅ Back to My Notes</a>
+</div>
+</body>
+</html>
