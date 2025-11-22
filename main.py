@@ -510,3 +510,6 @@ async def reset_password(request: Request, token: str, password: str = Form(...)
 
     return templates.TemplateResponse("login.html",
                                       {"request": request, "msg": "✅ Password reset successful! Kindly log in."})
+
+
+@app.post("/api/forgot-password")
